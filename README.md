@@ -1,1 +1,2 @@
-# sulf1de.github.io
+# ChemTutor v.1
+This is to study chemistry
