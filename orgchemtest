@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Organic Compound Guessing Game</h2>
+
+<img id="img" width="300"><br><br>
+
+<input id="guess" placeholder="Enter compound name">
+<button onclick="check()">Submit</button>
+<button onclick="nextCompound()">Next</button>
+
+<p id="result"></p>
+
+<script>
+let currentName = "";
+
+// Fetch a random compound from PubChem
+async function nextCompound() {
+    document.getElementById("result").textContent = "Loading...";
+
+    // Step 1: search for organic compounds (broad query)
+    let res = await fetch(
+        "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/organic/json?name_type=word"
+    ).catch(() => null);
+
+    // Fallback list if API is restrictive/unreliable
+    const fallback = ["ethanol", "benzene", "acetone", "glucose", "methane"];
+    let nameList = fallback;
+
+    // Pick random compound name
+    currentName = nameList[Math.floor(Math.random() * nameList.length)];
+
+    // Set image from PubChem by name (no CID needed)
+    document.getElementById("img").src =
+        "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/"
+        + encodeURIComponent(currentName)
+        + "/PNG";
+
+    document.getElementById("guess").value = "";
+    document.getElementById("result").textContent = "";
+}
+
+function check() {
+    let user = document.getElementById("guess").value.toLowerCase().trim();
+
+    if (user === currentName) {
+        document.getElementById("result").textContent = "Correct";
+    } else {
+        document.getElementById("result").textContent =
+            "Wrong. Answer: " + currentName;
+    }
+}
+
+// start game
+nextCompound();
+</script>
+
+</body>
+</html>
